@@ -9,8 +9,7 @@ import { getStorage } from 'firebase/storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // apiKey: process.env.FIREBASE_API_KEY,
-  apiKey: '',
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: 'chat-to-pdf.firebaseapp.com',
   projectId: 'chat-to-pdf',
   storageBucket: 'chat-to-pdf.appspot.com',
@@ -19,9 +18,7 @@ const firebaseConfig = {
   measurementId: 'G-1R2STJ6PNJ',
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 const db = getFirestore(app);
 const storage = getStorage(app);

@@ -50,10 +50,6 @@ export default function Document({
                 await deleteDocument(id);
               });
             }
-            // if (typeof window !== 'undefined') {
-            //   // const { innerHeight: height, innerWidth: width } = window;
-            //   // console.log(window.innerWidth);
-            // }
           }}
         >
           <Trash2Icon className="h-6 w-6 text-red-500" />

@@ -17,6 +17,8 @@ import { getFirestore, collection, query, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase';
 import askQuestion from '@/actions/askQuestion';
 import ChatMessage from './ChatMessage';
+import { useToast } from './ui/use-toast';
+import Link from 'next/link';
 
 export type Message = {
   id?: string;
@@ -27,6 +29,7 @@ export type Message = {
 
 export default function Chat({ id }: { id: string }) {
   const { user } = useUser();
+  const { toast } = useToast();
 
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -99,6 +102,19 @@ export default function Chat({ id }: { id: string }) {
 
     startTransition(async () => {
       const { success, message } = await askQuestion(id, q);
+
+      if (!success) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: message,
+          action: (
+            <Button asChild variant="outline" className="text-black">
+              <Link href="/dashboard/upgrade">Upgrade</Link>
+            </Button>
+          ),
+        });
+      }
 
       if (!success) {
         setMessages((prev) =>

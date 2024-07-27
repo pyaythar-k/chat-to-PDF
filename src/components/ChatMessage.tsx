@@ -32,7 +32,9 @@ export default function ChatMessage({ message }: { message: Message }) {
         </div>
       </div>
       <div
-        className={`chat-bubble prose ${isHuman && 'bg-indigo-600 text-white'}`}
+        className={`chat-bubble prose ${
+          isHuman ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-black'
+        }`}
       >
         {message.message === 'Thinking...' ? (
           <div className="flex items-center justify-center">

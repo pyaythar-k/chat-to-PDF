@@ -2,6 +2,7 @@ import { SignedIn, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { FilePlus } from 'lucide-react';
+import UpgradeButton from './UpgradeButton';
 
 export default function Header() {
   return (
@@ -25,6 +26,8 @@ export default function Header() {
               <FilePlus className="text-indigo-600" />
             </Link>
           </Button>
+
+          <UpgradeButton />
 
           <UserButton />
         </div>

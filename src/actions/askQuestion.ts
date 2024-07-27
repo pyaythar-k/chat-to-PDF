@@ -4,9 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import { adminDb } from '../../firebaseAdmin';
 import { Message } from '@/components/Chat';
 import { generateLangchainCompletion } from '@/lib/langchain';
-
-const FREE_TIER = 3;
-const PRO_TIER = 5;
+import { FREE_LIMIT, PRO_LIMIT } from '@/util/constants';
 
 export default async function askQuestion(id: string, question: string) {
   auth().protect();
@@ -23,6 +21,24 @@ export default async function askQuestion(id: string, question: string) {
   const userMessages = chatSnapshot.docs.filter(
     (doc) => doc.data().role === 'human'
   );
+
+  const userRef = await adminDb.collection('users').doc(userId!).get();
+
+  if (!userRef.data()?.hasActiveMembership) {
+    if (userMessages.length >= FREE_LIMIT) {
+      return {
+        success: false,
+        message: 'You have reached your FREE LIMIT.',
+      };
+    }
+
+    if (userMessages.length >= PRO_LIMIT) {
+      return {
+        success: false,
+        message: 'You have reached your PRO limit.',
+      };
+    }
+  }
 
   const userMessage: Message = {
     role: 'human',

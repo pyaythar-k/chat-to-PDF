@@ -1,4 +1,5 @@
 'use client';
+import useSubscription from '@/hooks/useSubscription';
 import useUpload, { StatusText } from '@/hooks/useUpload';
 import {
   CheckCircleIcon,
@@ -10,10 +11,15 @@ import {
 import { useRouter } from 'next/navigation';
 import { CSSProperties, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useToast } from '@/components/ui/use-toast';
+import Link from 'next/link';
+import { Button } from './ui/button';
 
 export default function FileUploader() {
   const { progress, status, fileId, handleUpload } = useUpload();
+  const { isOverFileLimit, filesLoading } = useSubscription();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (fileId) {
@@ -23,16 +29,30 @@ export default function FileUploader() {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      // Do something with the files
       console.log(acceptedFiles);
       const file = acceptedFiles[0];
       if (file) {
-        await handleUpload(file);
+        console.log('DEBUG: ' + isOverFileLimit);
+        if (!isOverFileLimit && !filesLoading) {
+          await handleUpload(file);
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Free Plan File Limit Reached',
+            description:
+              'You have reached the maximum files allowed for your plan.',
+            action: (
+              <Button asChild variant="outline" className="text-black">
+                <Link href="/dashboard/upgrade">Upgrade</Link>
+              </Button>
+            ),
+          });
+        }
       } else {
         //toast.error
       }
     },
-    [handleUpload]
+    [handleUpload, isOverFileLimit, filesLoading]
   );
 
   const statusIcons: {
